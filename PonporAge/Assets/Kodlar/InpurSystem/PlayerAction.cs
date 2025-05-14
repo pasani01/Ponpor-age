@@ -94,6 +94,34 @@ public partial class @PlayerAction: IInputActionCollection2, IDisposable
                     ""isPartOfComposite"": true
                 }
             ]
+        },
+        {
+            ""name"": ""Gun"",
+            ""id"": ""9a1d4303-ab56-4a0f-8d5c-df519e692194"",
+            ""actions"": [
+                {
+                    ""name"": ""fire"",
+                    ""type"": ""Button"",
+                    ""id"": ""8158cfae-b8a7-4e22-91e0-c4261a2d7355"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""e08a5340-5c38-47a8-bd38-bccea515f8b4"",
+                    ""path"": ""<Mouse>/leftButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""fire"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
         }
     ],
     ""controlSchemes"": []
@@ -101,11 +129,15 @@ public partial class @PlayerAction: IInputActionCollection2, IDisposable
         // Player
         m_Player = asset.FindActionMap("Player", throwIfNotFound: true);
         m_Player_Harakat = m_Player.FindAction("Harakat", throwIfNotFound: true);
+        // Gun
+        m_Gun = asset.FindActionMap("Gun", throwIfNotFound: true);
+        m_Gun_fire = m_Gun.FindAction("fire", throwIfNotFound: true);
     }
 
     ~@PlayerAction()
     {
         UnityEngine.Debug.Assert(!m_Player.enabled, "This will cause a leak and performance issues, PlayerAction.Player.Disable() has not been called.");
+        UnityEngine.Debug.Assert(!m_Gun.enabled, "This will cause a leak and performance issues, PlayerAction.Gun.Disable() has not been called.");
     }
 
     public void Dispose()
@@ -209,8 +241,58 @@ public partial class @PlayerAction: IInputActionCollection2, IDisposable
         }
     }
     public PlayerActions @Player => new PlayerActions(this);
+
+    // Gun
+    private readonly InputActionMap m_Gun;
+    private List<IGunActions> m_GunActionsCallbackInterfaces = new List<IGunActions>();
+    private readonly InputAction m_Gun_fire;
+    public struct GunActions
+    {
+        private @PlayerAction m_Wrapper;
+        public GunActions(@PlayerAction wrapper) { m_Wrapper = wrapper; }
+        public InputAction @fire => m_Wrapper.m_Gun_fire;
+        public InputActionMap Get() { return m_Wrapper.m_Gun; }
+        public void Enable() { Get().Enable(); }
+        public void Disable() { Get().Disable(); }
+        public bool enabled => Get().enabled;
+        public static implicit operator InputActionMap(GunActions set) { return set.Get(); }
+        public void AddCallbacks(IGunActions instance)
+        {
+            if (instance == null || m_Wrapper.m_GunActionsCallbackInterfaces.Contains(instance)) return;
+            m_Wrapper.m_GunActionsCallbackInterfaces.Add(instance);
+            @fire.started += instance.OnFire;
+            @fire.performed += instance.OnFire;
+            @fire.canceled += instance.OnFire;
+        }
+
+        private void UnregisterCallbacks(IGunActions instance)
+        {
+            @fire.started -= instance.OnFire;
+            @fire.performed -= instance.OnFire;
+            @fire.canceled -= instance.OnFire;
+        }
+
+        public void RemoveCallbacks(IGunActions instance)
+        {
+            if (m_Wrapper.m_GunActionsCallbackInterfaces.Remove(instance))
+                UnregisterCallbacks(instance);
+        }
+
+        public void SetCallbacks(IGunActions instance)
+        {
+            foreach (var item in m_Wrapper.m_GunActionsCallbackInterfaces)
+                UnregisterCallbacks(item);
+            m_Wrapper.m_GunActionsCallbackInterfaces.Clear();
+            AddCallbacks(instance);
+        }
+    }
+    public GunActions @Gun => new GunActions(this);
     public interface IPlayerActions
     {
         void OnHarakat(InputAction.CallbackContext context);
+    }
+    public interface IGunActions
+    {
+        void OnFire(InputAction.CallbackContext context);
     }
 }

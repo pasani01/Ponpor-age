@@ -72,6 +72,34 @@
                     "isPartOfComposite": true
                 }
             ]
+        },
+        {
+            "name": "Gun",
+            "id": "9a1d4303-ab56-4a0f-8d5c-df519e692194",
+            "actions": [
+                {
+                    "name": "fire",
+                    "type": "Button",
+                    "id": "8158cfae-b8a7-4e22-91e0-c4261a2d7355",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "e08a5340-5c38-47a8-bd38-bccea515f8b4",
+                    "path": "<Mouse>/leftButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "fire",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
         }
     ],
     "controlSchemes": []

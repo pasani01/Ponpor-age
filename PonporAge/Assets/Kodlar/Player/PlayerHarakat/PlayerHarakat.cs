@@ -13,6 +13,7 @@ public class PlayerHarakat : MonoBehaviour
     [SerializeField] private Rigidbody2D rb;
     [SerializeField] public float  timerForDesh;
     float players;
+    
     void Awake()
     {
         playerAction =new PlayerAction();
@@ -23,8 +24,14 @@ public class PlayerHarakat : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
     }
     void Update()
-    {
-        playerDirection = playerAction.Player.Harakat.ReadValue<Vector2>();
+    {   
+
+        
+        if(!isPlayerDesh)
+        {
+            playerDirection = playerAction.Player.Harakat.ReadValue<Vector2>();
+        }
+        
         timerForDesh += Time.deltaTime;
         if(Input.GetKeyDown(KeyCode.LeftShift))
         {  
@@ -35,6 +42,9 @@ public class PlayerHarakat : MonoBehaviour
             }
            
         }
+
+
+
     }
 
     IEnumerator PlayerDesh()
@@ -44,6 +54,8 @@ public class PlayerHarakat : MonoBehaviour
         isPlayerDesh = true;
         yield return new WaitForSeconds(playerDeshTime);
         playerSpeed = players;
+        
+        yield return new WaitForSeconds(0.1f);
         isPlayerDesh = false;
     }
     void FixedUpdate()
