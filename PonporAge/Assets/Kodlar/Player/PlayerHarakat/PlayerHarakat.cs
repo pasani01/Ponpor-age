@@ -3,6 +3,7 @@ using UnityEngine;
 
 public class PlayerHarakat : MonoBehaviour
 {
+    [SerializeField] private PlayerStats playerStat;
     [SerializeField] private PlayerAction playerAction;
     [SerializeField] public float playerSpeed;
     [SerializeField] private Vector2 playerDirection;
@@ -20,12 +21,14 @@ public class PlayerHarakat : MonoBehaviour
     }
 
     void Start()
-    {
+    {   
+        playerStat= GetComponent<PlayerStats>();
         rb = GetComponent<Rigidbody2D>();
     }
     void Update()
     {   
 
+        
         
         if(!isPlayerDesh)
         {
@@ -54,13 +57,12 @@ public class PlayerHarakat : MonoBehaviour
         isPlayerDesh = true;
         yield return new WaitForSeconds(playerDeshTime);
         playerSpeed = players;
-        
         yield return new WaitForSeconds(0.1f);
         isPlayerDesh = false;
     }
     void FixedUpdate()
-    {
-        rb.MovePosition(rb.position + playerDirection * playerSpeed * Time.fixedDeltaTime);
+    {   float newspeed =(playerSpeed*playerStat._playerSpeed)/10;
+        rb.MovePosition(rb.position +  playerDirection*newspeed * Time.fixedDeltaTime);
     }
     void OnEnable()
     {
