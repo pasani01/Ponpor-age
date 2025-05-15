@@ -61,8 +61,10 @@ public class PlayerHarakat : MonoBehaviour
         isPlayerDesh = false;
     }
     void FixedUpdate()
-    {   float newspeed =(playerSpeed*playerStat._playerSpeed)/10;
+    {   float newspeed =  playerSpeed * (playerStat._playerSpeed/10) ;
         rb.MovePosition(rb.position +  playerDirection*newspeed * Time.fixedDeltaTime);
+
+       
     }
     void OnEnable()
     {
