@@ -1,11 +1,13 @@
+using System;
 using System.Collections;
 using UnityEngine;
 
 public class PlayerHarakat : MonoBehaviour
-{
-    [SerializeField] private PlayerStats playerStat;
+{   
     [SerializeField] private PlayerAction playerAction;
     [SerializeField] public float playerSpeed;
+
+    [SerializeField] private float newSpeed;
     [SerializeField] private Vector2 playerDirection;
     [SerializeField] private float playerDeshSpeed;
     [SerializeField] private float playerDeshTime;
@@ -14,24 +16,39 @@ public class PlayerHarakat : MonoBehaviour
     [SerializeField] private Rigidbody2D rb;
     [SerializeField] public float  timerForDesh;
     float players;
-    
     void Awake()
     {
         playerAction =new PlayerAction();
     }
 
     void Start()
-    {   
-        playerStat= GetComponent<PlayerStats>();
+    {  
+        if(PlayerStats.instance!= null)
+        {
+            PlayerStats.instance.OnChangeValue += UpdateStats;
+        }
+        else
+        {
+            Debug.Log("PlayerStats instance not found");
+        }
+        
+        
         rb = GetComponent<Rigidbody2D>();
     }
+
+    private void UpdateStats(float value)
+    {
+        newSpeed = playerSpeed;
+        newSpeed += playerSpeed * (value / 100);
+
+    }
+
     void Update()
     {   
-
-        
         
         if(!isPlayerDesh)
-        {
+        {   
+            
             playerDirection = playerAction.Player.Harakat.ReadValue<Vector2>();
         }
         
@@ -61,18 +78,21 @@ public class PlayerHarakat : MonoBehaviour
         isPlayerDesh = false;
     }
     void FixedUpdate()
-    {   float newspeed =  playerSpeed * (playerStat._playerSpeed/10) ;
-        rb.MovePosition(rb.position +  playerDirection*newspeed * Time.fixedDeltaTime);
-
-       
+    {   
+        rb.MovePosition(rb.position +  playerDirection*newSpeed * Time.fixedDeltaTime);
     }
+
+
     void OnEnable()
     {
         playerAction.Enable();
     }
+
+
     void OnDisable()
     {
         playerAction.Disable();
+
     }
 
 
