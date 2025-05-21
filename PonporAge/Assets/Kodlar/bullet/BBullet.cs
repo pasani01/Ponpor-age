@@ -6,10 +6,13 @@ public class Bullet : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D other)
     {
-        if(other.CompareTag("Enemy"))
+        if (other.CompareTag("Enemy"))
         {
-            other.GetComponent<BEnemy>().TakeDamage(damage);
-            Destroy(gameObject);
+            if (other.TryGetComponent<EnemyHealthAndTakedamage>(out EnemyHealthAndTakedamage enemyTakeDamage))
+            {
+                enemyTakeDamage.TakeDamage(damage);
+                Destroy(this.gameObject);
+            }
         }
     }
 }
