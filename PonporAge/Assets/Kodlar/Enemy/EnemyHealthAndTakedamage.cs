@@ -25,6 +25,8 @@ public class EnemyHealthAndTakedamage : MonoBehaviour
     [SerializeField] private  Material []enemyMaterial;
     [SerializeField] private SpriteRenderer spriteRenderer;
 
+    [SerializeField] public GameObject Souls;
+
     void Start()
     {
 
@@ -83,7 +85,7 @@ public class EnemyHealthAndTakedamage : MonoBehaviour
 
     private void Die()
     {
-        
-        Destroy(gameObject);
+        Instantiate(Souls, transform.position, Quaternion.identity);
+        Destroy(gameObject,0.2f);
     }
 }

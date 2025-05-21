@@ -3,6 +3,7 @@ using UnityEngine;
 public class Soul : MonoBehaviour
 {
     [SerializeField] public GameObject Player;
+    [SerializeField] public float soulXp = 1;
     [SerializeField] private float speed = 5f;
 
     void Update()
@@ -12,5 +13,10 @@ public class Soul : MonoBehaviour
             Vector3 direction = (Player.transform.position - transform.position).normalized;
             transform.position += direction * speed * Time.deltaTime;
         }
+    }
+
+    public void destory()
+    {
+        Destroy(this.gameObject);
     }
 }
