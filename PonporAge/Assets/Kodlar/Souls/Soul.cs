@@ -3,7 +3,7 @@ using UnityEngine;
 public class Soul : MonoBehaviour
 {
     [SerializeField] public GameObject Player;
-    [SerializeField] public float soulXp = 1;
+    [SerializeField] public float soulXp = 3;
     [SerializeField] private float speed = 5f;
 
     void Update()
